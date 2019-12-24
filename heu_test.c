@@ -4,12 +4,12 @@
 #include <string.h>
 #include <ctype.h>
 #include <math.h>
-#include <limits.h> 
+#include <limits.h>
 
 #define FACES  24     // Sum of cube faces
 #define IDLEN  25     // uchar[24] + \0
 #define OPRNUM  6
-#define UCHAR_MAX 9
+#define UCHAR_MAX 9   // Causes WARNING on gcc
 
 typedef unsigned char uchar; // uchar
 uchar heu_map[FACES][FACES];
