@@ -333,11 +333,11 @@ node_t* addHashTbl ( node_t **hashTbl, uchar *cube )
   while ( tmp != NULL ) {
     if ( !memcmp(cube,tmp->cube,sizeof(uchar)*IDLEN) ) {
       // printf("Already registered!\n");
-      unhit_sum++;
       return tmp;
     }
     pre_tmp = tmp;
     tmp = tmp->next;
+    unhit_sum++;
   }
   pre_tmp->next = newNode(cube);
   return pre_tmp->next;
