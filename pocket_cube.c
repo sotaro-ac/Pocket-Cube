@@ -436,8 +436,6 @@ uchar* rotateRU ( uchar *cube )
   for (i=0;i<4;i++) {
     tmp[key[i]] = cube[key[(i+3)%4]];
     tmp[key[i]+1] = cube[key[(i+3)%4]+1];
-  }
-  for (i=0;i<4;i++) {
     tmp[i+offset] = cube[(i+3)%4+offset];
   }
 
@@ -454,8 +452,6 @@ uchar* rotateRD ( uchar *cube )
   for (i=0;i<4;i++) {
     tmp[key[(i+3)%4]] = cube[key[i]];
     tmp[key[(i+3)%4]+1] = cube[key[i]+1];
-  }
-  for (i=0;i<4;i++) {
     tmp[(i+3)%4+offset] = cube[i+offset];
   }
 
@@ -472,8 +468,6 @@ uchar* rotateLU ( uchar *cube )
   for (i=0;i<4;i++) {
     tmp[key[i]] = cube[key[(i+3)%4]];
     tmp[key[i]+1] = cube[key[(i+3)%4]+1];
-  }
-  for (i=0;i<4;i++) {
     tmp[(i+3)%4+offset] = cube[i+offset];
   }
 
@@ -490,8 +484,6 @@ uchar* rotateLD ( uchar *cube )
   for (i=0;i<4;i++) {
     tmp[key[(i+3)%4]] = cube[key[i]];
     tmp[key[(i+3)%4]+1] = cube[key[i]+1];
-  }
-  for (i=0;i<4;i++) {
     tmp[i+offset] = cube[(i+3)%4+offset];
   }
 
@@ -508,8 +500,6 @@ uchar* rotateBR ( uchar *cube )
   for (i=0;i<4;i++) {
     tmp[key[i]] = cube[key[(i+3)%4]];
     tmp[key[i]+1] = cube[key[(i+3)%4]+1];
-  }
-  for (i=0;i<4;i++) {
     tmp[i+offset] = cube[(i+3)%4+offset];
   }
 
@@ -526,8 +516,6 @@ uchar* rotateBL ( uchar *cube )
   for (i=0;i<4;i++) {
     tmp[key[(i+3)%4]] = cube[key[i]];
     tmp[key[(i+3)%4]+1] = cube[key[i]+1];
-  }
-  for (i=0;i<4;i++) {
     tmp[(i+3)%4+offset] = cube[i+offset];
   }
 

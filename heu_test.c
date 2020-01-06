@@ -136,26 +136,26 @@ int main ( void ) {
   printf("h(start):%d\n",h(start));
   printf("h(goal):%d\n",h(goal));
 
-  // tmp[0] = rotateRU( goal );
-  // tmp[1] = rotateRD( goal );
-  // tmp[2] = rotateLU( goal );
-  // tmp[3] = rotateLD( goal );
-  // tmp[4] = rotateBR( goal );
-  // tmp[5] = rotateBL( goal );
+  tmp[0] = rotateRU( goal );
+  tmp[1] = rotateRD( goal );
+  tmp[2] = rotateLU( goal );
+  tmp[3] = rotateLD( goal );
+  tmp[4] = rotateBR( goal );
+  tmp[5] = rotateBL( goal );
 
-  // print_cube(goal);
-  // printf("%s -(RU)-> %s h():%d\n",goal,tmp[0],h(tmp[0]) );
-  // print_cube(tmp[0]);
-  // printf("%s -(RD)-> %s h():%d\n",goal,tmp[1],h(tmp[1]) );
-  // print_cube(tmp[1]);
-  // printf("%s -(LU)-> %s h():%d\n",goal,tmp[2],h(tmp[2]) );
-  // print_cube(tmp[2]);
-  // printf("%s -(LD)-> %s h():%d\n",goal,tmp[3],h(tmp[3]) );
-  // print_cube(tmp[3]);
-  // printf("%s -(BR)-> %s h():%d\n",goal,tmp[4],h(tmp[4]) );
-  // print_cube(tmp[4]);
-  // printf("%s -(BL)-> %s h():%d\n",goal,tmp[5],h(tmp[5]) );
-  // print_cube(tmp[5]);
+  print_cube(goal);
+  printf("%s -(RU)-> %s h():%d\n",goal,tmp[0],h(tmp[0]) );
+  print_cube(tmp[0]);
+  printf("%s -(RD)-> %s h():%d\n",goal,tmp[1],h(tmp[1]) );
+  print_cube(tmp[1]);
+  printf("%s -(LU)-> %s h():%d\n",goal,tmp[2],h(tmp[2]) );
+  print_cube(tmp[2]);
+  printf("%s -(LD)-> %s h():%d\n",goal,tmp[3],h(tmp[3]) );
+  print_cube(tmp[3]);
+  printf("%s -(BR)-> %s h():%d\n",goal,tmp[4],h(tmp[4]) );
+  print_cube(tmp[4]);
+  printf("%s -(BL)-> %s h():%d\n",goal,tmp[5],h(tmp[5]) );
+  print_cube(tmp[5]);
 
   return 0;
 }
@@ -170,7 +170,7 @@ int h ( uchar *cube )
     if ( isdigit(c) ) offset = '0';
     else offset = 'A' - 10;
     sum += heu_map[c - offset][i];
-    printf("%d ",c - offset);
+    // printf("%d ",c - offset);
   }
   // printf("\n");
   return sum;
@@ -188,8 +188,6 @@ uchar* rotateRU ( uchar *cube )
   for (i=0;i<4;i++) {
     tmp[key[i]] = cube[key[(i+3)%4]];
     tmp[key[i]+1] = cube[key[(i+3)%4]+1];
-  }
-  for (i=0;i<4;i++) {
     tmp[i+offset] = cube[(i+3)%4+offset];
   }
 
@@ -206,8 +204,6 @@ uchar* rotateRD ( uchar *cube )
   for (i=0;i<4;i++) {
     tmp[key[(i+3)%4]] = cube[key[i]];
     tmp[key[(i+3)%4]+1] = cube[key[i]+1];
-  }
-  for (i=0;i<4;i++) {
     tmp[(i+3)%4+offset] = cube[i+offset];
   }
 
@@ -224,8 +220,6 @@ uchar* rotateLU ( uchar *cube )
   for (i=0;i<4;i++) {
     tmp[key[i]] = cube[key[(i+3)%4]];
     tmp[key[i]+1] = cube[key[(i+3)%4]+1];
-  }
-  for (i=0;i<4;i++) {
     tmp[(i+3)%4+offset] = cube[i+offset];
   }
 
@@ -242,8 +236,6 @@ uchar* rotateLD ( uchar *cube )
   for (i=0;i<4;i++) {
     tmp[key[(i+3)%4]] = cube[key[i]];
     tmp[key[(i+3)%4]+1] = cube[key[i]+1];
-  }
-  for (i=0;i<4;i++) {
     tmp[i+offset] = cube[(i+3)%4+offset];
   }
 
@@ -260,8 +252,6 @@ uchar* rotateBR ( uchar *cube )
   for (i=0;i<4;i++) {
     tmp[key[i]] = cube[key[(i+3)%4]];
     tmp[key[i]+1] = cube[key[(i+3)%4]+1];
-  }
-  for (i=0;i<4;i++) {
     tmp[i+offset] = cube[(i+3)%4+offset];
   }
 
@@ -278,8 +268,6 @@ uchar* rotateBL ( uchar *cube )
   for (i=0;i<4;i++) {
     tmp[key[(i+3)%4]] = cube[key[i]];
     tmp[key[(i+3)%4]+1] = cube[key[i]+1];
-  }
-  for (i=0;i<4;i++) {
     tmp[(i+3)%4+offset] = cube[i+offset];
   }
 
