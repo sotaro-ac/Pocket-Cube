@@ -5,7 +5,8 @@
 // # COMPILE:                                      #
 // #    gcc pocket_cube.c [-o (out_name)] -lm      #
 // # --------------------------------------------- #
-// #   Copyright (C) Y.Sotaro All Right Reserved.  #
+// # Copyright (c) 2020 sotaro-ac @License MIT     #
+// # https://github.com/sotaro-ac/Pocket-Cube      #
 // =================================================
 
 /* INCLUDES */
@@ -134,13 +135,19 @@ int main ( int argc, char *argv[] )
 
   if ( argc == 1 ){
     /* set start cube status randomly */
-    srand((unsigned)time(NULL));
+    unsigned seed = (unsigned)time(NULL);
+    printf("seed: %u\n", seed);
+    srand(seed);
     set_rotate = rand()%GODNUM;
   } else if ( argc == 2 ) {
-    srand((unsigned)time(NULL));
+    unsigned seed = (unsigned)time(NULL);
+    printf("seed: %u\n", seed);
+    srand(seed);
     set_rotate = atoi(argv[1]);
   } else if ( argc == 3 ) {
-    srand(atoi(argv[2]));
+    unsigned seed = atoi(argv[2]);
+    printf("seed: %u\n", seed);
+    srand(seed);
     set_rotate = atoi(argv[1]);
   } else {
     usage( argv[0] );
