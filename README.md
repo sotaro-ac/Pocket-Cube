@@ -3,6 +3,11 @@
 ポケットキューブを解く最短手順を A* アルゴリズムで探索するプログラムです．
 かなり力任せの探索を行うため，あまり高速ではありません．
 
+```text
+TODO: WebAssemblyにコンパイルしてみる
+> Emscription: https://emscripten.org/docs/getting_started/downloads.html
+```
+
 ## ポケットキューブについて
 
 ポケットキューブは，ルービックキューブより小さな 2 x 2 x 2 の立方体パズルです．
