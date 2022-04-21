@@ -41,7 +41,7 @@ TODO: WebAssemblyにコンパイルしてみる
 
 ### コンパイルと実行
 例えば，次のようにコンパイルした後，任意のパラメータを与えて実行して下さい．
-~~~
+~~~sh
 Pocket-Cube$ gcc pocket_cube.c -O3 -lm
 Pocket-Cube$ ./a.out <rotate> <seed>
 ~~~
@@ -50,7 +50,7 @@ Pocket-Cube$ ./a.out <rotate> <seed>
 
 ### 出力結果例
 以下は，<code>\<rotate\></code> に <code>14</code> を与えたときの実行結果です．
-~~~
+~~~sh
 [Pocket-Cube]:$ time ./a.out 14
 seed: 1648654218
 rotate: 14
@@ -78,7 +78,7 @@ sys     0m0.020s
 ~~~
 
 また，同じランダムシード（<code>\<rotate\></code>の値）を指定することで，同じ実行結果を再現することが可能です．
-~~~
+~~~sh
 [Pocket-Cube]:$ time ./a.out 14 1648654218
 seed: 1648654218
 rotate: 14
