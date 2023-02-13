@@ -3,10 +3,10 @@
 ポケットキューブを解く最短手順を A* アルゴリズムで探索するプログラムです．
 かなり力任せの探索を行うため，あまり高速ではありません．
 
-```text
-TODO: WebAssemblyにコンパイルしてみる
-> Emscription: https://emscripten.org/docs/getting_started/downloads.html
-```
+> TODO: WebAssemblyにコンパイルしてみる
+> - Emscripten Documentation: https://emscripten.org/docs/index.html
+> - [C/C++ から WebAssembly へのコンパイル - WebAssembly | MDN](https://developer.mozilla.org/ja/docs/WebAssembly/C_to_wasm)
+
 
 ## ポケットキューブについて
 
