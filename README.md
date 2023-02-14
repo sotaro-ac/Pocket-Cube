@@ -7,6 +7,38 @@
 > - Emscripten Documentation: https://emscripten.org/docs/index.html
 > - [C/C++ から WebAssembly へのコンパイル - WebAssembly | MDN](https://developer.mozilla.org/ja/docs/WebAssembly/C_to_wasm)
 
+<details open>
+<summary>wasm環境の構築</summary>
+
+- **Emscriptionのセットアップ**
+  `scoop`を使ってインストールすることにした。.
+  ```sh
+  scoop install emscripton    # install emscription
+  emsdk install latest  # install latest wasm sdk
+  emsdk activate latest # activate wasm sdk
+  ```
+  > 公式ではGitHubからパッケージをダウンロードしてインストールする方法を紹介している。
+
+- **テストコンパイル：C言語のサンプルコードを変換する**
+  1. 以下の`hello.c`を用意する（`./wasm_test`に配置）。
+     ```c
+     #include <stdio.h>
+
+     int main() {
+         printf("Hello World\n");
+         return 0;
+     }
+     ```
+  2. Emscriptenコンパイラー（`emcc`）を使って以下のコマンドを実行する。
+     ```sh
+     emcc hello.c -o hello.html
+     ```
+     これにより、同フォルダに`he;lo.html, hello.js, hello.wasm`ファイルが生成されます。
+
+  3. `hello.html`ファイルをブラウザで開く
+     "Hello World"と表示されたら成功です！
+
+</details>
 
 ## ポケットキューブについて
 
