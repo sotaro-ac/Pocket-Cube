@@ -1,7 +1,7 @@
 # Pocket-Cube
 
 ポケットキューブを解く最短手順を A* アルゴリズムで探索するプログラムです．
-かなり力任せの探索を行うため，あまり高速ではありません．
+枝刈りをしない力任せの探索を行うため，あまり高速ではありません．
 
 > TODO: WebAssemblyにコンパイルしてみる
 > - Emscripten Documentation: https://emscripten.org/docs/index.html
