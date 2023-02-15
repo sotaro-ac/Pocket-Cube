@@ -33,7 +33,7 @@
      ```sh
      emcc hello.c -o hello.html
      ```
-     これにより、同フォルダに`he;lo.html, hello.js, hello.wasm`ファイルが生成されます。
+     これにより、同フォルダに`hello.html, hello.js, hello.wasm`ファイルが生成されます。
 
   3. `hello.html`ファイルをブラウザで開く
      "Hello World"と表示されたら成功です！
