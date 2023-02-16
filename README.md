@@ -1,7 +1,57 @@
 # Pocket-Cube
 
 ポケットキューブを解く最短手順を A* アルゴリズムで探索するプログラムです．
-かなり力任せの探索を行うため，あまり高速ではありません．
+枝刈りをしない力任せの探索を行うため，あまり高速ではありません．
+
+> TODO: WebAssemblyにコンパイルしてみる
+> - Wasmer Documentation: https://docs.wasmer.io/
+> - Emscripten Documentation: https://emscripten.org/docs/index.html
+> - [C/C++ から WebAssembly へのコンパイル - WebAssembly | MDN](https://developer.mozilla.org/ja/docs/WebAssembly/C_to_wasm)
+
+<details open>
+<summary>wasm環境の構築</summary>
+
+- **Emscription(WebBrowser WASM)のセットアップ**
+  `scoop`を使ってインストールすることにした。.
+  ```sh
+  scoop install emscripton    # install emscription
+  emsdk install latest  # install latest wasm sdk
+  emsdk activate latest # activate wasm sdk
+  ```
+  > 公式ではGitHubからパッケージをダウンロードしてインストールする方法を紹介している。
+
+- **テストコンパイル：C言語のサンプルコードを変換する**
+  1. 以下の`hello.c`を用意する（`./wasm_dev/hello`に配置）。
+     ```c
+     #include <stdio.h>
+
+     int main() {
+         printf("Hello World\n");
+         return 0;
+     }
+     ```
+  2. Emscriptenコンパイラー（`emcc`）を使って以下のコマンドを実行する。
+     ```sh
+     emcc hello.c -o hello.html
+     ```
+     これにより、同フォルダに`hello.html, hello.js, hello.wasm`ファイルが生成されます。
+
+  3. `hello.html`ファイルをブラウザで開く
+     "Hello World"と表示されたら成功です！
+
+  > `emcc` から生成された`*.html, *.js`ファイルは冗長なので、ここでは`*.wasm`ファイルのみを生成し、必要な`*.html, *.js`ファイルは自作していくことにします。
+
+- **Wasmer(WASI)のセットアップ**
+  同様に`scoop`を使ってインストールすることにした。
+  ```sh
+  scoop install wasmer    # install wasmer
+  # $ wasmer -v
+  # > wasmer 3.1.1
+  ```
+  後にサーバサイド(WASI)関係で入門するかも？
+
+
+</details>
 
 ## ポケットキューブについて
 
@@ -36,7 +86,7 @@
 
 ### コンパイルと実行
 例えば，次のようにコンパイルした後，任意のパラメータを与えて実行して下さい．
-~~~
+~~~sh
 Pocket-Cube$ gcc pocket_cube.c -O3 -lm
 Pocket-Cube$ ./a.out <rotate> <seed>
 ~~~
@@ -45,7 +95,7 @@ Pocket-Cube$ ./a.out <rotate> <seed>
 
 ### 出力結果例
 以下は，<code>\<rotate\></code> に <code>14</code> を与えたときの実行結果です．
-~~~
+~~~sh
 [Pocket-Cube]:$ time ./a.out 14
 seed: 1648654218
 rotate: 14
@@ -73,7 +123,7 @@ sys     0m0.020s
 ~~~
 
 また，同じランダムシード（<code>\<rotate\></code>の値）を指定することで，同じ実行結果を再現することが可能です．
-~~~
+~~~sh
 [Pocket-Cube]:$ time ./a.out 14 1648654218
 seed: 1648654218
 rotate: 14

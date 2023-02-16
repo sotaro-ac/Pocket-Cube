@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hello WASM!</title>
+  </head>
+  <body>
+    <h1 id="title">WASM DOES NOT WORK!</h1>
+
+    <script src="a.out.js"></script>
+    <script>
+      Module.onRuntimeInitialized = async () => {
+        // hello.wasm を読み込む
+        // - WASMに文字列を渡す方法：https://zenn.dev/guregu/articles/d712785a372dec
+        // - EmscriptenでJSとCで相互にデータをやり取りする：https://www.kofuk.org/blog/20211202-emscripten-pass-data/
+        const api = {
+          print_hello: Module.cwrap("print_hello", "", []),
+          get_msg: Module.cwrap("get_msg", "string", []), // pointer to string
+          hello: Module.cwrap("hello", "string", ["string"]),
+          free_hello: Module.cwrap("free_hello", "", []),
+        };
+
+        // print_hello: printf("Hello WASM!\n")
+        api.print_hello();
+
+        // get_msg: return "WASM"
+        const msg = api.get_msg();
+        console.log(`msg: ${msg}`);
+
+        // hello: return sprintf("Hello %s!", msg)
+        document.querySelector("#title").textContent = api.hello(msg);
+        api.free_hello();
+      };
+    </script>
+  </body>
+</html>

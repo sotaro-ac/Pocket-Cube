@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+
+<!--
+  References:
+  - https://qiita.com/soramimi_jp/items/1b7ed0ddcefb0f4a7172
+  - https://qiita.com/nokotan/items/35bea8b895eb7c9682de
+  - https://web.dev/asyncify/
+-->
+
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>PocketCube with WASM</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Roboto&family=Roboto+Mono&display=swap");
+
+      * {
+        margin: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Roboto", sans-serif;
+        color: aliceblue;
+        background: blueviolet;
+      }
+
+      .success {
+        color: chartreuse;
+      }
+
+      .error {
+        color: tomato;
+      }
+
+      .ta-c {
+        text-align: center;
+      }
+
+      .fs-sm {
+        font-size: small;
+      }
+
+      #wrapper {
+        max-width: 640px;
+        margin: 2rem auto;
+      }
+
+      h1 {
+        font-family: "Meiryo";
+        color: aliceblue;
+        text-align: center;
+        border-bottom: 0.5px solid aliceblue;
+        margin: 1em 0;
+      }
+
+      pre {
+        font-family: "Roboto Mono", monospace;
+        font-size: small;
+        min-height: 48em;
+        padding: 1em;
+        margin: 1em 0;
+        border-radius: 0.5em;
+        background: rgba(0, 0, 0, 0.2);
+      }
+
+      #inputs {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        font-size: medium;
+        padding: 0.5em 5%;
+      }
+
+      #numbers {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        width: 55%;
+      }
+
+      #inputs input {
+        font-size: medium;
+        text-align: center;
+        color: aliceblue;
+        appearance: none;
+        background: transparent;
+        width: 5em;
+        border: none;
+        border-bottom: 1.5px solid aliceblue;
+      }
+
+      #inputs input::placeholder {
+        font-size: medium;
+        color: wheat;
+        width: 4.5em;
+      }
+
+      #inputs input:focus {
+        outline: none;
+      }
+
+      #inputs button {
+        font-size: medium;
+        color: aliceblue;
+        border: 1.5px solid aliceblue;
+        padding: 0.5em;
+        background: none;
+        height: 3em;
+        width: 40%;
+        margin: 0.5em 0;
+      }
+
+      #inputs button:disabled {
+        color: grey;
+        border: 1.5px solid gray;
+        background: none;
+      }
+
+      #inputs #solve {
+        font-weight: bold;
+        color: blueviolet;
+        background: aliceblue;
+      }
+
+      #inputs #solve:disabled {
+        color: tomato;
+        border: 1.5px solid tomato;
+        background: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="wrapper">
+      <h1>PocketCube with WebAssembly</h1>
+      <p class="ta-c">
+        C言語のプログラムをWebAssemblyにコンパイルしました。<br />
+        ポケットキューブをA*アルゴリズムで解いてみましょう！
+      </p>
+      <br>
+      <p class="ta-c fs-sm">
+        注意：膨大な時間がかかる場合があるため、探索手数に上限を設定してあります！
+      </p>
+
+      <div id="inputs">
+        <div id="numbers">
+          <label>
+            ROTATE:
+            <input
+              id="rotate"
+              type="number"
+              max="14"
+              min="-1"
+              placeholder="Random"
+            />
+          </label>
+          <label>
+            SEED:
+            <input id="seed" type="number" min="-1" placeholder="Random" />
+          </label>
+        </div>
+        <button id="solve" type="button">SOLVE</button>
+
+        <button id="help" type="button" hidden>HELP</button>
+        <button id="clear" type="button" hidden>CLEAR OUTPUT</button>
+      </div>
+
+      <pre id="console"></pre>
+    </div>
+    <script type="text/javascript" src="main.js"></script>
+    <!-- code your process -->
+    <script>
+      // sleep
+      const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
+
+      // Initialized
+      Module.onRuntimeInitialized = async () => {
+        // pocket_cube solver
+        const cube = {
+          solve: (a, b) =>
+            new Promise((resolve) => {
+              Module._solve(a || -1, b || -1, false);
+              resolve();
+            }),
+          help: () => {
+            Module._solve(this.rotate_num, this.random_seed, true);
+          },
+        };
+
+        // show help
+        cube.help();
+
+        const solveBtn = document.querySelector("#solve");
+        const helpBtn = document.querySelector("#help");
+        const clearBtn = document.querySelector("#clear");
+        const outputArea = document.querySelector("#console");
+        const rotateInput = document.querySelector("#rotate");
+        const seedInput = document.querySelector("#seed");
+
+        solveBtn.addEventListener("click", async (el) => {
+          const rotateNum = Number(rotateInput.value);
+          const randomSeed = Number(seedInput.value);
+          const btn = el.target;
+
+          btn.disabled = true;
+          btn.textContent = "RUNNING...";
+          outputArea.textContent = "";
+          cube.solve(rotateNum || -1, randomSeed || -1, false).then();
+          btn.textContent = "SOLVED!";
+          btn.disabled = false;
+        });
+
+        helpBtn.addEventListener("click", (el) => {
+          outputArea.textContent = "";
+          cube.help();
+        });
+
+        clearBtn.addEventListener("click", (el) => {
+          outputArea.textContent = "";
+        });
+
+        rotateInput.addEventListener("change", (el) => {
+          if (el.target.value < 0) el.target.value = null;
+        });
+
+        seedInput.addEventListener("change", (el) => {
+          if (el.target.value < 0) el.target.value = null;
+        });
+      };
+    </script>
+  </body>
+</html>

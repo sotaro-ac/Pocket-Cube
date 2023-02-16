@@ -133,25 +133,33 @@ int main ( int argc, char *argv[] )
   int i,j,k;
   int min_idx, top_idx;
 
-  if ( argc == 1 ){
+  switch (argc)
+  {
+  case 1:
     /* set start cube status randomly */
     unsigned seed = (unsigned)time(NULL);
     printf("seed: %u\n", seed);
     srand(seed);
-    set_rotate = rand()%GODNUM;
-  } else if ( argc == 2 ) {
+    set_rotate = rand() % GODNUM;
+    break;
+
+  case 2:
     unsigned seed = (unsigned)time(NULL);
     printf("seed: %u\n", seed);
     srand(seed);
     set_rotate = atoi(argv[1]);
-  } else if ( argc == 3 ) {
+    break;
+
+  case 3:
     unsigned seed = atoi(argv[2]);
     printf("seed: %u\n", seed);
     srand(seed);
     set_rotate = atoi(argv[1]);
-  } else {
-    usage( argv[0] );
-    return EXIT_SUCCESS;
+    break;
+
+  default:
+    usage(argv[0]);
+    break;
   }
 
   /* initialize goal cube */

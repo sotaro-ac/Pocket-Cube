@@ -1,3 +1,6 @@
 #GIT-IGNORE
 *.txt
 a.out
+
+# vscode
+.vscode
