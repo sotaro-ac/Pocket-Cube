@@ -2,12 +2,14 @@
 // # ** INTELLIGENT INFORMATION PROCESSING **      #
 // # [ Solving Pocket-Cube with A-star Algorithm ] #
 // # --------------------------------------------- #
-// # COMPILE:                                      #
-// #   emcc -O3 -s WASM=1 EXTRA_EXPORTED_RUNTIME_METHODS='["cwrap"]' ...
-// # --------------------------------------------- #
-// # Copyright (c) 2020 sotaro-ac @License MIT     #
+// # Copyright (c) 2023 sotaro-ac @License MIT     #
 // # https://github.com/sotaro-ac/Pocket-Cube      #
 // =================================================
+
+// Compile:
+// $ emcc -O3 pocket_cube_wasm.c -o main.js -sASYNCIFY
+
+// TODO: Avoid memory leak.
 
 /* INCLUDES */
 #include <stdio.h>
@@ -18,6 +20,7 @@
 #include <time.h>
 #include <math.h> // -lm
 #include <limits.h>
+#include <emscripten.h> // emcc
 
 /* DEFINES */
 #define GODNUM 14    // God's Number
@@ -27,7 +30,22 @@
 #define OPRNUM 6     // Next states of cube
 #define STEPCOST 12  // Cost of step between node to node
 
+#define BROWSER 1
+
 /* MACROS */
+#ifdef BROWSER
+#define EARLYSTOP 2000
+
+char m[BUFSIZ] = {0};
+#define printf(...)          \
+  sprintf(m, ##__VA_ARGS__); \
+  clog_(m);
+
+#define SUCC "<span class='success'>"
+#define ERRC "<span class='error'>"
+#define ENDC "</span>"
+
+#endif
 
 /* TYPEDEF */
 typedef unsigned char uchar; // uchar
@@ -109,8 +127,15 @@ uchar *rotateBL(uchar *cube); // Rotate Bottom face to Left
 void print_cube(uchar *cube);
 void print_rout(node_t *node);
 
-/* MAIN */
-int main(int argc, char *argv[])
+/* call javascript method */
+EM_JS(void, clog_, (char *msg), {
+  const pre = document.querySelector("#console");
+  pre.insertAdjacentHTML('beforeend', UTF8ToString(msg));
+});
+
+/* cube solver */
+EMSCRIPTEN_KEEPALIVE
+int solve(int rotate_num, int random_seed, bool need_help)
 {
   /* Local vars */
   node_t **hashTbl; // hash table (for searching exist nodes)
@@ -133,45 +158,34 @@ int main(int argc, char *argv[])
   int i, j, k;
   int min_idx, top_idx;
 
-  switch (argc)
+  // show help?
+  if (need_help)
   {
-  case 1:
-    /* set start cube status randomly */
-    unsigned seed = (unsigned)time(NULL);
-    printf("seed: %u\n", seed);
-    srand(seed);
-    set_rotate = rand() % GODNUM;
-    break;
-
-  case 2:
-    unsigned seed = atoi(argv[2]);
-    printf("seed: %u\n", seed);
-    srand(seed);
-    set_rotate = atoi(argv[1]);
-    break;
-
-  case 3:
-    unsigned seed = atoi(argv[2]);
-    printf("seed: %u\n", seed);
-    srand(seed);
-    set_rotate = atoi(argv[1]);
-    break;
-
-  default:
-    usage(argv[0]);
-    break;
+    usage("cube");
+    return EXIT_SUCCESS;
   }
+
+  /* set start cube status randomly */
+  unsigned seed = (0 < random_seed) ? random_seed : (unsigned)time(NULL);
+  printf("seed: %u\n", seed);
+  srand(seed);
+  set_rotate = (-1 < rotate_num) ? rotate_num : rand() % GODNUM;
 
   /* initialize goal cube */
   for (i = 0; i < FACES; i++)
+  {
     goal[i] = charset[i];
+  }
   goal[FACES] = '\0';
 
   /* initialize start cube */
   start = (uchar *)malloc(sizeof(uchar) * IDLEN);
   for (i = 0; i < FACES; i++)
+  {
     start[i] = charset[i];
-  printf("rotate: %d\n", set_rotate);
+  }
+  printf("rotate: %d\n\n", set_rotate);
+
   printf("[GOAL]->");
   for (i = 0; i < set_rotate; i++)
   {
@@ -230,7 +244,7 @@ int main(int argc, char *argv[])
   /*** A-star Algorithm ***/
   while (0 < size)
   {
-    if (++loops % 100 == 0)
+    if (++loops % 250 == 0)
     {
       printf("Loop: %5d/ size: %5d/ node: %5d/ miss: %5d/ extend: %4d\r",
              loops, size, node_sum, unhit_sum, extend);
@@ -270,7 +284,7 @@ int main(int argc, char *argv[])
       printf("steps: %d\n", steps);
       print_cube(top->cube);
       print_rout(top);
-      printf("SUCCEED!\n");
+      printf("\n%sSUCCEED!%s\n", SUCC, ENDC);
       return EXIT_SUCCESS;
     }
 
@@ -321,21 +335,32 @@ int main(int argc, char *argv[])
       }
       free(tmp_cube);
     }
+
+#ifdef EARLYSTOP
+    if (EARLYSTOP < loops)
+    {
+      printf("\n%sERROR! The defined loop limit is reached (EARLYSTOP: %d).%s\n",
+             ERRC, EARLYSTOP, ENDC);
+      return EXIT_FAILURE;
+    }
+#endif
+
   } // End of while
 
   /* failed to goal */
-  printf("FAILED!\n");
+  printf("\n%sFAILED!%s\n", ERRC, ENDC);
   return EXIT_SUCCESS;
 }
 
 /** functions **/
 void usage(char *out_name)
 {
-  printf("## SOLVING POCKET CUBE WITH A-STAR ALGORITHM ##\n");
+
+  printf("%s## SOLVING POCKET CUBE WITH A-STAR ALGORITHM ##%s\n", SUCC, ENDC);
   printf("  Usage:\n");
   printf("    %s [ROTATE] [SEED]\n", out_name);
-  printf("    NO PARAMS : Solve pocket-cube which has random faces.\n");
-  printf("    [ROTATE]  : set rotating times with 1st param (Min: 1).\n");
+  printf("    NO PARAMS : solve pocket-cube which has random faces.\n");
+  printf("    [ROTATE]  : set rotating times with 1st param (Min: 0).\n");
   printf("    [SEED]    : set random seed with 2nd param.\n\n");
   return;
 }
@@ -600,12 +625,14 @@ uchar *rotateBL(uchar *cube)
 void print_cube(uchar *cube)
 {
   // printf("  cube[%s]\n",cube);
+  printf("\n");
   printf("        [%c][%c]              \n", cube[0], cube[1]);
   printf("        [%c][%c]              \n", cube[3], cube[2]);
   printf("  [%c][%c][%c][%c][%c][%c][%c][%c]  \n", cube[7], cube[4], cube[11], cube[8], cube[19], cube[16], cube[23], cube[20]);
   printf("  [%c][%c][%c][%c][%c][%c][%c][%c]  \n", cube[6], cube[5], cube[10], cube[9], cube[18], cube[17], cube[22], cube[21]);
   printf("        [%c][%c]              \n", cube[15], cube[12]);
   printf("        [%c][%c]              \n", cube[14], cube[13]);
+  printf("\n");
   return;
 }
 /* print_rout */
