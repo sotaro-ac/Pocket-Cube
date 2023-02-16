@@ -1,14 +1,32 @@
 # Pocket-Cube
 
 ポケットキューブを解く最短手順を A* アルゴリズムで探索するプログラムです．
-枝刈りをしない力任せの探索を行うため，あまり高速ではありません．
+枝刈りをしない力任せの探索を行うため，現状あまり高速ではありません．
+
+## ポケットキューブについて
+
+ポケットキューブは，ルービックキューブより小さな 2 x 2 x 2 の立方体パズルです．
+パズルが取り得る状態数は全部で 3,674,160，最大手数は 90° 回転を１手とした場合に 14 手です．
+
+全状態のうち，最短手数が 10 ～ 12 の状態が高いボリュームゾーンとなっており，約 3,000,000 通り（約 83%）を占めています．
+
+そのため，貧弱なアルゴリズムを用いて**最短手数が 10 手以上の状態から解き始めると，非常に長い探索時間が掛かる可能性があります．**
+
+
+### New Feature:
+
+当プログラムの動作をブラウザ上で確認することができます！
+- PocketCube with WASM : https://sotaro-ac.github.io/Pocket-Cube/wasm_dev/pocket_cube.html
+
+![PocketCube with Wasm](img/pocket_cube-wasm.jpg)
+
 
 > TODO: WebAssemblyにコンパイルしてみる
 > - Wasmer Documentation: https://docs.wasmer.io/
 > - Emscripten Documentation: https://emscripten.org/docs/index.html
 > - [C/C++ から WebAssembly へのコンパイル - WebAssembly | MDN](https://developer.mozilla.org/ja/docs/WebAssembly/C_to_wasm)
 
-<details open>
+<details>
 <summary>wasm環境の構築</summary>
 
 - **Emscription(WebBrowser WASM)のセットアップ**
@@ -53,14 +71,6 @@
 
 </details>
 
-## ポケットキューブについて
-
-ポケットキューブは，ルービックキューブより小さな 2 x 2 x 2 の立方体パズルです．
-パズルが取り得る状態数は全部で 3,674,160，最大手数は 90° 回転を１手とした場合に 14 手です．
-
-全状態のうち，最短手数が 10 ～ 12 の状態が高いボリュームゾーンとなっており，約 3,000,000 通り（約 83%）を占めています．
-
-そのため，貧弱なアルゴリズムを用いて**最短手数が 10 手以上の状態から解き始めると，非常に長い探索時間が掛かる可能性があります．**
 
 ## 当プログラムについて
 
