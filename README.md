@@ -4,13 +4,14 @@
 枝刈りをしない力任せの探索を行うため，あまり高速ではありません．
 
 > TODO: WebAssemblyにコンパイルしてみる
+> - Wasmer Documentation: https://docs.wasmer.io/
 > - Emscripten Documentation: https://emscripten.org/docs/index.html
 > - [C/C++ から WebAssembly へのコンパイル - WebAssembly | MDN](https://developer.mozilla.org/ja/docs/WebAssembly/C_to_wasm)
 
 <details open>
 <summary>wasm環境の構築</summary>
 
-- **Emscriptionのセットアップ**
+- **Emscription(WebBrowser WASM)のセットアップ**
   `scoop`を使ってインストールすることにした。.
   ```sh
   scoop install emscripton    # install emscription
@@ -20,7 +21,7 @@
   > 公式ではGitHubからパッケージをダウンロードしてインストールする方法を紹介している。
 
 - **テストコンパイル：C言語のサンプルコードを変換する**
-  1. 以下の`hello.c`を用意する（`./wasm_dev/test`に配置）。
+  1. 以下の`hello.c`を用意する（`./wasm_dev/hello`に配置）。
      ```c
      #include <stdio.h>
 
@@ -37,6 +38,18 @@
 
   3. `hello.html`ファイルをブラウザで開く
      "Hello World"と表示されたら成功です！
+
+  > `emcc` から生成された`*.html, *.js`ファイルは冗長なので、ここでは`*.wasm`ファイルのみを生成し、必要な`*.html, *.js`ファイルは自作していくことにします。
+
+- **Wasmer(WASI)のセットアップ**
+  同様に`scoop`を使ってインストールすることにした。
+  ```sh
+  scoop install wasmer    # install wasmer
+  # $ wasmer -v
+  # > wasmer 3.1.1
+  ```
+  後にサーバサイド(WASI)関係で入門するかも？
+
 
 </details>
 
